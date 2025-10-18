@@ -33,9 +33,9 @@ def load_config():
 def take_screenshot_linux() -> Path:
     """Take screenshot using available tool"""
     timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
-    tmpdir = Path(tempfile.gettempdir()) / 'sfs'
+    tmpdir = Path(tempfile.gettempdir()) / 'filedrop'
     tmpdir.mkdir(exist_ok=True)
-    filepath = tmpdir / f"sfs_{timestamp}.png"
+    filepath = tmpdir / f"fd_{timestamp}.png"
 
     # Try different screenshot tools
     tools = [

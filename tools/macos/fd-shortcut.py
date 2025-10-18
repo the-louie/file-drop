@@ -24,9 +24,9 @@ SERVER_URL = "https://your-server.com/"
 def take_screenshot() -> Path:
     """Capture interactive screenshot, return temp file path"""
     timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
-    tmpdir = Path(tempfile.gettempdir()) / 'sfs'
+    tmpdir = Path(tempfile.gettempdir()) / 'filedrop'
     tmpdir.mkdir(exist_ok=True)
-    filepath = tmpdir / f"sfs_{timestamp}.png"
+    filepath = tmpdir / f"fd_{timestamp}.png"
 
     # Use screencapture with interactive selection
     try:

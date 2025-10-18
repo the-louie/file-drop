@@ -276,9 +276,9 @@ SERVER_URL = "https://your-server.com/"
 def take_screenshot() -> Path:
     """Capture interactive screenshot, return temp file path"""
     timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
-    tmpdir = Path(tempfile.gettempdir()) / 'sfs'
+    tmpdir = Path(tempfile.gettempdir()) / 'filedrop'
     tmpdir.mkdir(exist_ok=True)
-    filepath = tmpdir / f"sfs_{timestamp}.png"
+    filepath = tmpdir / f"fd_{timestamp}.png"
 
     # Use screencapture with interactive selection
     subprocess.run(['screencapture', '-ix', str(filepath)], check=True)
@@ -402,7 +402,7 @@ if __name__ == '__main__':
 1. Get input (if any)
 2. If input is files → Pass to script
 3. If no input → Script takes screenshot
-4. Run Shell Script: /usr/bin/env python3 /path/to/sfs-shortcut.py "$@"
+4. Run Shell Script: /usr/bin/env python3 /path/to/fd-shortcut.py "$@"
 5. Show result notification (handled by script)
 ```
 
@@ -423,27 +423,27 @@ if __name__ == '__main__':
 
 1. **Configure server URL:**
    ```bash
-   nano tools/macos/sfs-shortcut.py
+   nano tools/macos/fd-shortcut.py
    # Edit SERVER_URL line
    ```
 
 2. **Make script executable:**
    ```bash
-   chmod +x tools/macos/sfs-shortcut.py
+   chmod +x tools/macos/fd-shortcut.py
    ```
 
 3. **Import Shortcut:**
          - Open Shortcuts app
-         - File → Import from → Select `SFS-Upload.shortcut` file
+         - File → Import from → Select `FileDropUpload.shortcut` file
 
 4. **Configure keyboard shortcut:**
          - System Settings → Keyboard → Keyboard Shortcuts
-         - Services → Find "SFS Upload"
+         - Services → Find "File Drop Upload"
          - Add shortcut (e.g., Cmd+Shift+U)
 
 5. **Enable in Finder:**
          - Right-click any file
-         - Look for "SFS Upload" in Quick Actions or Services
+         - Look for "File Drop Upload" in Quick Actions or Services
 
 ## First Use
 

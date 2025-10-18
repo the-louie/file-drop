@@ -31,7 +31,7 @@ class FileDropClient:
 
     def __init__(self, server_url: str, config_dir: str = None):
         """
-        Initialize SFS client
+        Initialize File Drop client
 
         Args:
             server_url: Base URL of server (e.g., https://files.example.com)
