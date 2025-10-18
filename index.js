@@ -380,9 +380,6 @@ db.run("CREATE TABLE IF NOT EXISTS uploaded_chunks (cid INTEGER PRIMARY KEY AUTO
 			logError("Failed to create uuid index:", idxErr);
 		}
 	});
-
-	// Run cleanup on startup
-	cleanupOrphanedChunks();
 });
 db.run("CREATE TABLE IF NOT EXISTS audit_log (id INTEGER PRIMARY KEY AUTOINCREMENT, timestamp INTEGER DEFAULT (strftime('%s', 'now')), event_type TEXT, remote_ip TEXT, username TEXT, details TEXT, status TEXT)", function(err) {
 	if (err) {
@@ -402,6 +399,15 @@ db.run("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, 
 	db.run("CREATE INDEX IF NOT EXISTS idx_users_username ON users(username)", function(idxErr) {
 		if (idxErr) {
 			logError("Failed to create username index:", idxErr);
+		}
+		
+		// Run all cleanup functions on startup (only after all tables are created)
+		cleanupOrphanedChunks();
+		if (config.file_retention_days && config.file_retention_days > 0) {
+			cleanupOldFiles();
+		}
+		if (config.audit_log_retention_days && config.audit_log_retention_days > 0) {
+			cleanupOldAuditLogs();
 		}
 	});
 });
@@ -541,16 +547,6 @@ function cleanupOldAuditLogs() {
 			}
 		}
 	});
-}
-
-// Run file retention cleanup on startup
-if (config.file_retention_days && config.file_retention_days > 0) {
-	cleanupOldFiles();
-}
-
-// Run audit log cleanup on startup
-if (config.audit_log_retention_days && config.audit_log_retention_days > 0) {
-	cleanupOldAuditLogs();
 }
 
 // Schedule periodic audit log cleanup every hour
