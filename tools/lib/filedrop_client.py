@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Simple File Sharer Client Library
+File Drop Client Library
 Shared upload functionality for macOS and Linux tools
 
 Requirements: Python 3.8+ (uses walrus operator)
@@ -22,39 +22,39 @@ except ImportError:
     sys.exit(1)
 
 
-class SFSClient:
-    """Simple File Sharer client with authentication and retry logic"""
-    
+class FileDropClient:
+    """File Drop client with authentication and retry logic"""
+
     CHUNK_SIZE = 2 * 1024 * 1024  # 2MB to match server
     MAX_RETRIES = 10
     RETRY_DELAYS = [1, 2, 4, 8, 16, 30, 30, 30, 30, 30]  # Exponential backoff
-    
+
     def __init__(self, server_url: str, config_dir: str = None):
         """
         Initialize SFS client
-        
+
         Args:
             server_url: Base URL of server (e.g., https://files.example.com)
-            config_dir: Optional config directory path (default: ~/.sfs)
-            
+            config_dir: Optional config directory path (default: ~/.filedrop)
+
         Raises:
             ValueError: If server_url is not a valid URL
         """
         # Validate server URL
         if not server_url:
             raise ValueError("server_url cannot be empty")
-        
+
         parsed = urlparse(server_url)
         if not parsed.scheme or not parsed.netloc:
             raise ValueError(f"Invalid server URL: {server_url}")
-        
+
         self.server_url = server_url.rstrip('/') + '/'
-        self.config_dir = Path(config_dir or os.path.expanduser('~/.sfs'))
+        self.config_dir = Path(config_dir or os.path.expanduser('~/.filedrop'))
         self.config_dir.mkdir(parents=True, exist_ok=True)
         self.session_file = self.config_dir / 'session.json'
         self.session = requests.Session()
         self._load_session()
-    
+
     def _load_session(self) -> bool:
         """Load session token if exists and valid"""
         if self.session_file.exists():
@@ -66,11 +66,11 @@ class SFSClient:
             except (json.JSONDecodeError, KeyError):
                 pass
         return False
-    
+
     def _save_session(self, token: str, expires_in: int = 31536000):
         """
         Save session token (default: 1 year)
-        
+
         Args:
             token: Session token from server
             expires_in: Expiration time in seconds (default: 1 year)
@@ -81,15 +81,15 @@ class SFSClient:
         }
         self.session_file.write_text(json.dumps(data))
         self.session_file.chmod(0o600)
-    
+
     def login(self, username: str, password: str) -> bool:
         """
         Authenticate and store long-lived session
-        
+
         Args:
             username: Username
             password: Password
-            
+
         Returns:
             True if login successful, False otherwise
         """
@@ -108,11 +108,11 @@ class SFSClient:
         except Exception as e:
             print(f"Login error: {e}")
             return False
-    
+
     def ensure_authenticated(self) -> bool:
         """
         Check auth, prompt for credentials if needed
-        
+
         Returns:
             True if authenticated, False if authentication failed
         """
@@ -123,31 +123,31 @@ class SFSClient:
                 return True
         except:
             pass
-        
+
         # Need to login
         print("Authentication required")
         username = input("Username: ")
-        
+
         # Try to use getpass for password input (hidden)
         try:
             from getpass import getpass
             password = getpass("Password: ")
         except ImportError:
             password = input("Password (visible): ")
-        
+
         if self.login(username, password):
             print("Login successful")
             return True
         print("Login failed")
         return False
-    
+
     def calculate_checksum(self, filepath: Union[str, Path]) -> str:
         """
         Calculate SHA-256 checksum of entire file
-        
+
         Args:
             filepath: Path to file (str or Path object)
-            
+
         Returns:
             Hexadecimal SHA-256 hash string
         """
@@ -157,35 +157,35 @@ class SFSClient:
             while chunk := f.read(8192):
                 sha256.update(chunk)
         return sha256.hexdigest()
-    
+
     def upload_file(self, filepath: Union[str, Path], collection_id: Optional[str] = None,
                    progress_callback=None) -> Optional[Dict[str, Any]]:
         """
         Upload file with retry logic and progress tracking
-        
+
         Args:
             filepath: Path to file to upload (str or Path object)
             collection_id: Optional collection UUID for grouping files
             progress_callback: Optional callback(phase, current, total)
-            
+
         Returns:
             Dict with 'success' and 'url' or 'error' on failure
         """
         # Ensure filepath is a Path object
         filepath = Path(filepath) if not isinstance(filepath, Path) else filepath
-        
+
         if not filepath.exists():
             return {'error': 'File not found'}
-        
+
         file_uuid = str(uuid.uuid4())
         file_size = filepath.stat().st_size
         chunk_count = (file_size + self.CHUNK_SIZE - 1) // self.CHUNK_SIZE
-        
+
         # Calculate checksum
         if progress_callback:
             progress_callback('checksum', 0, 1)
         checksum = self.calculate_checksum(filepath)
-        
+
         # Upload chunks
         with open(filepath, 'rb') as f:
             for chunk_idx in range(chunk_count):
@@ -195,11 +195,11 @@ class SFSClient:
                 )
                 if not success:
                     return {'error': f'Failed to upload chunk {chunk_idx}'}
-        
+
         # Merge chunks
         if progress_callback:
             progress_callback('merging', chunk_count, chunk_count)
-        
+
         params = {
             'name': filepath.name,
             'chunkCount': chunk_count,
@@ -208,7 +208,7 @@ class SFSClient:
         }
         if collection_id:
             params['collectionID'] = collection_id
-        
+
         try:
             resp = self.session.post(
                 urljoin(self.server_url, 'merge'),
@@ -232,12 +232,12 @@ class SFSClient:
                 return {'error': error_msg}
         except Exception as e:
             return {'error': f'Merge error: {e}'}
-    
+
     def _upload_chunk_with_retry(self, data: bytes, chunk_idx: int, file_uuid: str,
                                  total_chunks: int, current: int, progress_callback) -> bool:
         """
         Upload single chunk with exponential backoff retry
-        
+
         Args:
             data: Chunk data bytes
             chunk_idx: Zero-based chunk index
@@ -245,7 +245,7 @@ class SFSClient:
             total_chunks: Total number of chunks
             current: Current chunk number (1-based, for display)
             progress_callback: Optional callback for progress
-            
+
         Returns:
             True if upload successful, False otherwise
         """
@@ -275,35 +275,35 @@ class SFSClient:
             except Exception as e:
                 if attempt < self.MAX_RETRIES - 1:
                     print(f"Chunk {chunk_idx} attempt {attempt + 1} failed: {e}")
-            
+
             if attempt < self.MAX_RETRIES - 1:
                 time.sleep(self.RETRY_DELAYS[attempt])
-        
+
         return False
-    
+
     def upload_multiple(self, filepaths: List[Path], progress_callback=None) -> Dict[str, Any]:
         """
         Upload multiple files as a collection
-        
+
         Args:
             filepaths: List of file paths to upload
             progress_callback: Optional callback(phase, current, total)
-            
+
         Returns:
             Dict with 'success' and 'collection_url' or 'error'
         """
         if len(filepaths) == 1:
             return self.upload_file(filepaths[0], progress_callback=progress_callback)
-        
+
         collection_id = str(uuid.uuid4())
         results = []
-        
+
         for idx, filepath in enumerate(filepaths):
             if progress_callback:
                 progress_callback('file', idx + 1, len(filepaths))
             result = self.upload_file(filepath, collection_id, progress_callback)
             results.append(result)
-        
+
         success_count = sum(1 for r in results if r.get('success'))
         if success_count > 0:
             return {

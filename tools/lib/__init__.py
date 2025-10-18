@@ -1,8 +1,7 @@
+File Drop Client Library
 """
-Simple File Sharer Client Library
-"""
-from .sfs_client import SFSClient
+from .filedrop_client import FileDropClient
 
-__all__ = ['SFSClient']
+__all__ = ['FileDropClient']
 __version__ = '1.0.0'
 

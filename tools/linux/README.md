@@ -18,7 +18,7 @@ sudo pacman -S python python-pip
 
 ### Python Dependencies
 ```bash
-cd /path/to/simple-file-sharer
+cd /path/to/file-drop
 pip3 install --user -r tools/requirements.txt
 ```
 
@@ -52,8 +52,8 @@ sudo apt install xsel
 
 ```bash
 mkdir -p ~/.local/bin
-cp tools/linux/sfs ~/.local/bin/
-chmod +x ~/.local/bin/sfs
+cp tools/linux/fd ~/.local/bin/
+chmod +x ~/.local/bin/fd
 ```
 
 ### 2. Add to PATH
@@ -72,10 +72,10 @@ For other shells:
 ### 3. First Run Configuration
 
 ```bash
-sfs config
+fd config
 # Enter your server URL when prompted
 
-sfs login
+fd login
 # Enter username and password
 ```
 
@@ -85,20 +85,20 @@ sfs login
 
 ```bash
 # Single file
-sfs upload photo.jpg
+fd upload photo.jpg
 
 # Multiple files as collection
-sfs upload *.png
-sfs upload document.pdf presentation.pptx data.csv
+fd upload *.png
+fd upload document.pdf presentation.pptx data.csv
 
 # With globbing
-sfs upload ~/Downloads/*.jpg
+fd upload ~/Downloads/*.jpg
 ```
 
 ### Screenshot and Upload
 
 ```bash
-sfs screenshot
+fd screenshot
 # Select screen area with mouse
 # URL automatically copied to clipboard
 ```
@@ -107,13 +107,13 @@ sfs screenshot
 
 ```bash
 # Configure server URL
-sfs config
+fd config
 
 # Show current configuration
-sfs config --show
+fd config --show
 
 # Re-authenticate
-sfs login
+fd login
 ```
 
 ## Keyboard Shortcuts
@@ -124,19 +124,19 @@ Add screenshot shortcut to your desktop environment:
 1. **Settings** → **Keyboard** → **Keyboard Shortcuts** → **Custom Shortcuts**
 2. Click **+** to add new shortcut
 3. **Name:** `Upload Screenshot`
-4. **Command:** `/home/YOUR_USERNAME/.local/bin/sfs screenshot`
+4. **Command:** `/home/YOUR_USERNAME/.local/bin/fd screenshot`
 5. **Shortcut:** Click and press `Ctrl+Shift+U` (or your preference)
 
 ### KDE Plasma
 1. **System Settings** → **Shortcuts** → **Custom Shortcuts**
 2. **Edit** → **New** → **Global Shortcut** → **Command/URL**
 3. **Trigger:** `Ctrl+Shift+U`
-4. **Action:** `/home/YOUR_USERNAME/.local/bin/sfs screenshot`
+4. **Action:** `/home/YOUR_USERNAME/.local/bin/fd screenshot`
 
 ### i3/sway
 Add to config file (`~/.config/i3/config` or `~/.config/sway/config`):
 ```
-bindsym $mod+Shift+u exec /home/YOUR_USERNAME/.local/bin/sfs screenshot
+bindsym $mod+Shift+u exec /home/YOUR_USERNAME/.local/bin/fd screenshot
 ```
 
 ## Features
@@ -154,36 +154,36 @@ bindsym $mod+Shift+u exec /home/YOUR_USERNAME/.local/bin/sfs screenshot
 
 ```bash
 # Upload vacation photos as collection
-sfs upload ~/Pictures/vacation/*.jpg
+fd upload ~/Pictures/vacation/*.jpg
 
 # Quick screenshot share
-sfs screenshot
+fd screenshot
 
 # Upload and share immediately
-sfs upload report.pdf && xdg-open $(pbpaste)
+fd upload report.pdf && xdg-open $(pbpaste)
 
 # Batch upload
-find ~/Documents -name "*.pdf" -exec sfs upload {} \;
+find ~/Documents -name "*.pdf" -exec fd upload {} \;
 ```
 
 ## Session Management
 
-Sessions are stored in `~/.sfs/session.json` and last 1 year.
+Sessions are stored in `~/.filedrop/session.json` and last 1 year.
 
 **View session info:**
 ```bash
-cat ~/.sfs/session.json
+cat ~/.filedrop/session.json
 # Shows: {"token": "...", "expires_at": 1766000000}
 ```
 
 **Clear session (logout):**
 ```bash
-rm ~/.sfs/session.json
+rm ~/.filedrop/session.json
 ```
 
 **Re-authenticate:**
 ```bash
-sfs login
+fd login
 ```
 
 ## Troubleshooting
@@ -210,7 +210,7 @@ sudo apt install gnome-screenshot scrot
 ### "Authentication failed"
 Check server URL configuration:
 ```bash
-sfs config --show
+fd config --show
 # Verify URL is correct
 ```
 
@@ -223,30 +223,30 @@ sudo apt install xclip
 ### Permission denied
 Make script executable:
 ```bash
-chmod +x ~/.local/bin/sfs
+chmod +x ~/.local/bin/fd
 ```
 
 ### Debug mode
 Run with `-h` for help:
 ```bash
-sfs upload -h
-sfs screenshot -h
+fd upload -h
+fd screenshot -h
 ```
 
-For detailed debugging, edit `tools/lib/sfs_client.py` and add print statements.
+For detailed debugging, edit `tools/lib/filedrop_client.py` and add print statements.
 
 ## Advanced Usage
 
 ### Change Server URL
 ```bash
-sfs config
+fd config
 # Enter new server URL
 ```
 
 ### Upload with custom naming
 The server generates unique names automatically. To see the generated URL:
 ```bash
-url=$(sfs upload file.txt | tail -1)
+url=$(fd upload file.txt | tail -1)
 echo "File available at: $url"
 ```
 
@@ -254,28 +254,28 @@ echo "File available at: $url"
 
 **Upload clipboard screenshot (using scrot):**
 ```bash
-alias scrotup='scrot -s /tmp/scrot.png && sfs upload /tmp/scrot.png && rm /tmp/scrot.png'
+alias scrotup='scrot -s /tmp/scrot.png && fd upload /tmp/scrot.png && rm /tmp/scrot.png'
 ```
 
 **File manager integration (Thunar):**
 1. Edit → Configure custom actions
-2. Name: "Upload to SFS"
-3. Command: `sfs upload %F`
+2. Name: "Upload to File Drop"
+3. Command: `fd upload %F`
 
 **File manager integration (Nautilus):**
-Create `~/.local/share/nautilus/scripts/Upload to SFS`:
+Create `~/.local/share/nautilus/scripts/Upload to File Drop`:
 ```bash
 #!/bin/bash
-sfs upload "$@"
+fd upload "$@"
 ```
 
 ## Configuration Reference
 
-**Config file:** `~/.sfs/config`
+**Config file:** `~/.filedrop/config`
 - Contains server URL
 - Plain text file
 
-**Session file:** `~/.sfs/session.json`
+**Session file:** `~/.filedrop/session.json`
 - Contains session token and expiry
 - Permissions: 600 (read/write for owner only)
 - Auto-created on first login
@@ -284,8 +284,8 @@ sfs upload "$@"
 ## Uninstall
 
 ```bash
-rm ~/.local/bin/sfs
-rm -rf ~/.sfs
+rm ~/.local/bin/fd
+rm -rf ~/.filedrop
 ```
 
 ---

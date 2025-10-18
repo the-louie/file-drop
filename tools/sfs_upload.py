@@ -1,6 +1,6 @@
 #! /usr/bin/python
 #
-# for each specified file upload it to simple-file-sharer
+# for each specified file upload it to file-drop
 # and return status for use in sfs_osx_helper.
 
 import os

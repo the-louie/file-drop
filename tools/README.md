@@ -1,4 +1,4 @@
-# Simple File Sharer - Desktop Upload Tools
+# File Drop - Desktop Upload Tools
 
 Modern desktop upload tools for macOS and Linux with authentication, retry logic, and checksum verification.
 
@@ -32,7 +32,7 @@ Modern desktop upload tools for macOS and Linux with authentication, retry logic
 
 ## Shared Features
 
-Both tools share common functionality via `tools/lib/sfs_client.py`:
+Both tools share common functionality via `tools/lib/filedrop_client.py`:
 
 - ✅ **Long-lived authentication** - 1-year session tokens
 - ✅ **SHA-256 checksum verification** - Ensures file integrity
@@ -51,10 +51,10 @@ Both tools share common functionality via `tools/lib/sfs_client.py`:
 pip3 install --user -r tools/requirements.txt
 
 # Edit server URL
-nano tools/macos/sfs-shortcut.py
+nano tools/macos/fd-shortcut.py
 
 # Test
-python3 tools/macos/sfs-shortcut.py
+python3 tools/macos/fd-shortcut.py
 ```
 
 ### Linux
@@ -63,16 +63,16 @@ python3 tools/macos/sfs-shortcut.py
 pip3 install --user -r tools/requirements.txt
 
 # Install CLI tool
-cp tools/linux/sfs ~/.local/bin/
-chmod +x ~/.local/bin/sfs
+cp tools/linux/fd ~/.local/bin/
+chmod +x ~/.local/bin/fd
 
 # Configure
-sfs config
-sfs login
+fd config
+fd login
 
 # Use
-sfs upload file.txt
-sfs screenshot
+fd upload file.txt
+fd screenshot
 ```
 
 ## Architecture
@@ -81,12 +81,12 @@ sfs screenshot
 tools/
 ├── lib/
 │   ├── __init__.py           # Package init
-│   └── sfs_client.py         # Shared client library
+│   └── filedrop_client.py    # Shared client library
 ├── macos/
-│   ├── sfs-shortcut.py       # macOS Shortcuts helper
+│   ├── fd-shortcut.py        # macOS Shortcuts helper
 │   └── README.md             # Installation guide
 ├── linux/
-│   ├── sfs                   # Linux CLI tool
+│   ├── fd                    # Linux CLI tool
 │   └── README.md             # Installation guide
 ├── osx-workflows/            # Legacy (deprecated)
 │   ├── README.md             # Deprecation notice
@@ -125,7 +125,7 @@ If you're upgrading from the old OSX Automator workflows:
 **Migration steps:**
 1. Install new tools (see platform-specific READMEs)
 2. Remove old Automator workflows from Services
-3. Delete old scripts: `tools/sfs_upload.py`, `tools/sfs_screenshot.sh`, `tools/sfs_osx_helper.sh`
+3. Old scripts in `tools/` directory are deprecated but kept for historical reference
 
 See [osx-workflows/REVIEW.md](osx-workflows/REVIEW.md) for detailed analysis of legacy tools.
 
@@ -134,21 +134,21 @@ See [osx-workflows/REVIEW.md](osx-workflows/REVIEW.md) for detailed analysis of 
 ### Test authentication:
 ```bash
 # macOS
-python3 tools/macos/sfs-shortcut.py
+python3 tools/macos/fd-shortcut.py
 
 # Linux
-sfs login
+fd login
 ```
 
 ### Test upload:
 ```bash
 # macOS
 echo "test" > /tmp/test.txt
-python3 tools/macos/sfs-shortcut.py /tmp/test.txt
+python3 tools/macos/fd-shortcut.py /tmp/test.txt
 
 # Linux
 echo "test" > /tmp/test.txt
-sfs upload /tmp/test.txt
+fd upload /tmp/test.txt
 ```
 
 ## Troubleshooting
@@ -178,7 +178,7 @@ pip3 install --user requests
 ## Development
 
 **Modify chunk size or retry count:**
-Edit `tools/lib/sfs_client.py`:
+Edit `tools/lib/filedrop_client.py`:
 ```python
 CHUNK_SIZE = 2 * 1024 * 1024  # 2MB default
 MAX_RETRIES = 10  # 10 attempts default
@@ -186,7 +186,7 @@ RETRY_DELAYS = [1, 2, 4, 8, 16, 30, 30, 30, 30, 30]
 ```
 
 **Add new features:**
-The shared library (`sfs_client.py`) can be extended with additional methods for new functionality.
+The shared library (`tools/lib/filedrop_client.py`) can be extended with additional methods for new functionality.
 
 ## License
 

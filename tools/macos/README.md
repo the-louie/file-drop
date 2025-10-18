@@ -7,7 +7,7 @@ Modern file upload tool for macOS using the native Shortcuts app.
 1. **Python 3** (built-in on macOS 12.3+)
 2. **Install Python dependencies:**
    ```bash
-   cd /path/to/simple-file-sharer
+   cd /path/to/file-drop
    pip3 install --user -r tools/requirements.txt
    ```
 
@@ -18,20 +18,20 @@ Modern file upload tool for macOS using the native Shortcuts app.
 Edit the script to set your server URL:
 
 ```bash
-nano tools/macos/sfs-shortcut.py
+nano tools/macos/fd-shortcut.py
 # Change line 21: SERVER_URL = "https://your-server.com/"
 ```
 
 ### 2. Make Script Executable
 
 ```bash
-chmod +x tools/macos/sfs-shortcut.py
+chmod +x tools/macos/fd-shortcut.py
 ```
 
 ### 3. Test Authentication
 
 ```bash
-python3 tools/macos/sfs-shortcut.py
+python3 tools/macos/fd-shortcut.py
 ```
 
 This will:
@@ -53,9 +53,9 @@ This will:
    - **Pass input:** `as arguments`
    - **Script:**
      ```bash
-     /usr/bin/env python3 /full/path/to/tools/macos/sfs-shortcut.py "$@"
+     /usr/bin/env python3 /full/path/to/tools/macos/fd-shortcut.py "$@"
      ```
-5. Save as: **"SFS Upload"**
+5. Save as: **"File Drop Upload"**
 
 ### Option B: Create Keyboard Shortcut for Screenshots
 
@@ -69,11 +69,11 @@ This will:
    - **Pass input:** `to stdin`
    - **Script:**
      ```bash
-     /usr/bin/env python3 /full/path/to/tools/macos/sfs-shortcut.py
+     /usr/bin/env python3 /full/path/to/tools/macos/fd-shortcut.py
      ```
-5. Save as: **"SFS Screenshot"**
+5. Save as: **"File Drop Screenshot"**
 6. Go to **System Settings** → **Keyboard** → **Keyboard Shortcuts** → **Services**
-7. Find "SFS Screenshot" and assign keyboard shortcut (e.g., `⌘⇧U`)
+7. Find "File Drop Screenshot" and assign keyboard shortcut (e.g., `⌘⇧U`)
 
 ## Usage
 
@@ -85,7 +85,7 @@ This will:
 
 ### File Upload
 - Right-click file(s) in Finder
-- **Quick Actions** → **SFS Upload**
+- **Quick Actions** → **File Drop Upload**
 - URL copied to clipboard
 - For multiple files, creates collection URL
 
@@ -95,7 +95,7 @@ On first run, you'll be prompted for:
 - **Username:** Your account username
 - **Password:** Your account password
 
-Session is saved for 1 year (~/.sfs/session.json).
+Session is saved for 1 year (~/.filedrop/session.json).
 
 ## Features
 
@@ -112,7 +112,7 @@ Session is saved for 1 year (~/.sfs/session.json).
 ### "Authentication required" every time
 Check if session file exists and has correct permissions:
 ```bash
-ls -la ~/.sfs/session.json
+ls -la ~/.filedrop/session.json
 # Should show: -rw------- (600 permissions)
 ```
 
@@ -126,9 +126,9 @@ pip3 install --user requests
 Use absolute path in Automator:
 ```bash
 # Find full path:
-cd /path/to/simple-file-sharer
+cd /path/to/file-drop
 pwd
-# Use: /full/path/tools/macos/sfs-shortcut.py
+# Use: /full/path/tools/macos/fd-shortcut.py
 ```
 
 ### Screenshots not captured
@@ -139,7 +139,7 @@ The script uses `screencapture -ix` which requires:
 ### Debug mode
 Run script manually to see detailed output:
 ```bash
-python3 tools/macos/sfs-shortcut.py /path/to/test/file.txt
+python3 tools/macos/fd-shortcut.py /path/to/test/file.txt
 ```
 
 ## Uninstall
@@ -149,13 +149,13 @@ python3 tools/macos/sfs-shortcut.py /path/to/test/file.txt
    - Right-click service → **Remove**
 2. Remove session data:
    ```bash
-   rm -rf ~/.sfs
+   rm -rf ~/.filedrop
    ```
 
 ## Advanced Configuration
 
 ### Change chunk size or retry count
-Edit `tools/lib/sfs_client.py`:
+Edit `tools/lib/filedrop_client.py`:
 ```python
 CHUNK_SIZE = 2 * 1024 * 1024  # 2MB default
 MAX_RETRIES = 10  # 10 attempts default

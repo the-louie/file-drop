@@ -27,7 +27,7 @@ Replace legacy OSX workflows with modern tools:
 
 ### 1.1 Create Shared Python Library ✅ COMPLETE
 
-**File:** `tools/lib/sfs_client.py` (Created)
+**File:** `tools/lib/filedrop_client.py` (Created, renamed from sfs_client.py)
 **Commit:** `752e3a3` - feat: shared Python client library for upload tools
 
 Core functionality for both macOS and Linux:
@@ -50,8 +50,8 @@ except ImportError:
     print("Error: requests library not found. Install: pip3 install requests")
     sys.exit(1)
 
-class SFSClient:
-    """Simple File Sharer client with authentication and retry logic"""
+class FileDropClient:
+    """File Drop client with authentication and retry logic"""
 
     CHUNK_SIZE = 2 * 1024 * 1024  # 2MB to match server
     MAX_RETRIES = 10
@@ -59,7 +59,7 @@ class SFSClient:
 
     def __init__(self, server_url: str, config_dir: str = None):
         self.server_url = server_url.rstrip('/') + '/'
-        self.config_dir = Path(config_dir or os.path.expanduser('~/.sfs'))
+        self.config_dir = Path(config_dir or os.path.expanduser('~/.filedrop'))
         self.config_dir.mkdir(parents=True, exist_ok=True)
         self.session_file = self.config_dir / 'session.json'
         self.session = requests.Session()
@@ -248,7 +248,7 @@ requests>=2.31.0
 
 ### 1.2 Create macOS Shortcut Helper Script ✅ COMPLETE
 
-**File:** `tools/macos/sfs-shortcut.py` (Created)
+**File:** `tools/macos/fd-shortcut.py` (Created, renamed from sfs-shortcut.py)
 **Commit:** `7fde99b` - feat: macOS and Linux upload tools with authentication and retry
 
 Python script that Shortcuts will call:
@@ -256,7 +256,7 @@ Python script that Shortcuts will call:
 ```python
 #!/usr/bin/env python3
 """
-Simple File Sharer - macOS Shortcut Helper
+File Drop - macOS Shortcut Helper
 Auto-detects input type (screenshot or files) and uploads
 """
 import sys
@@ -268,7 +268,7 @@ from datetime import datetime
 
 # Add lib to path
 sys.path.insert(0, str(Path(__file__).parent.parent / 'lib'))
-from sfs_client import SFSClient
+from filedrop_client import FileDropClient
 
 # Configuration - EDIT THIS
 SERVER_URL = "https://your-server.com/"
@@ -325,7 +325,7 @@ def copy_to_clipboard(text):
 
 def main():
     # Initialize client
-    client = SFSClient(SERVER_URL)
+    client = FileDropClient(SERVER_URL)
 
     # Ensure authenticated
     if not client.ensure_authenticated():
@@ -461,7 +461,7 @@ On first run, you'll be prompted for username/password. Session lasts 1 year.
 
 ### 2.1 Create Linux CLI Tool ✅ COMPLETE
 
-**File:** `tools/linux/sfs` (Created)
+**File:** `tools/linux/fd` (Created, renamed from sfs)
 **Commit:** `7fde99b` - feat: macOS and Linux upload tools with authentication and retry
 
 Main CLI tool with subcommands:
@@ -472,7 +472,7 @@ Main CLI tool with subcommands:
 
 """
 
-Simple File Sharer - Linux CLI Tool
+File Drop - Linux CLI Tool
 
 Upload files and screenshots from command line
 
@@ -496,11 +496,11 @@ from datetime import datetime
 
 sys.path.insert(0, str(Path(**file**).parent.parent / 'lib'))
 
-from sfs_client import SFSClient
+from filedrop_client import FileDropClient
 
 # Configuration file
 
-CONFIG_FILE = Path.home() / '.sfs' / 'config'
+CONFIG_FILE = Path.home() / '.filedrop' / 'config'
 
 def load_config():
 
@@ -582,18 +582,19 @@ print("Calculating checksum...", end=
 ### âœ… Completed Tasks
 
 **1. Shared Python Library**
-- Created 	ools/lib/sfs_client.py with SFSClient class
+- Created `tools/lib/filedrop_client.py` with FileDropClient class
 - Features: Authentication, retry logic, checksums, session management
 - Requirements: Python 3.8+, requests library
+- Config directory: `~/.filedrop/`
 
 **2. macOS Shortcuts Integration**
-- Created 	ools/macos/sfs-shortcut.py helper script
+- Created `tools/macos/fd-shortcut.py` helper script
 - Auto-detects screenshot vs file mode
 - Native notifications and clipboard integration
 - Comprehensive installation guide
 
 **3. Linux CLI Tool**
-- Created 	ools/linux/sfs command-line tool
+- Created `tools/linux/fd` command-line tool
 - Subcommands: upload, screenshot, login, config
 - Multi-tool screenshot support with fallback
 - Progress bars and clipboard integration
@@ -614,14 +615,14 @@ print("Calculating checksum...", end=
 
 **macOS Users:**
 1. Install Python dependencies: pip3 install -r tools/requirements.txt
-2. Edit SERVER_URL in tools/macos/sfs-shortcut.py
+2. Edit SERVER_URL in tools/macos/fd-shortcut.py
 3. Create Automator Quick Action (see tools/macos/README.md)
 4. Test and report any issues
 
 **Linux Users:**
 1. Install Python dependencies: pip3 install -r tools/requirements.txt
-2. Copy tools/linux/sfs to ~/.local/bin/
-3. Run: sfs config, sfs login
+2. Copy tools/linux/fd to ~/.local/bin/
+3. Run: fd config, fd login
 4. Test and report any issues
 
 ### Features Implemented

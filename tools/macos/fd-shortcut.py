@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Simple File Sharer - macOS Shortcut Helper
+File Drop - macOS Shortcut Helper
 Auto-detects input type (screenshot or files) and uploads
 
 Usage:
@@ -16,7 +16,7 @@ from datetime import datetime
 
 # Add lib to path
 sys.path.insert(0, str(Path(__file__).parent.parent / 'lib'))
-from sfs_client import SFSClient
+from filedrop_client import FileDropClient
 
 # Configuration - EDIT THIS
 SERVER_URL = "https://your-server.com/"
@@ -27,16 +27,16 @@ def take_screenshot() -> Path:
     tmpdir = Path(tempfile.gettempdir()) / 'sfs'
     tmpdir.mkdir(exist_ok=True)
     filepath = tmpdir / f"sfs_{timestamp}.png"
-    
+
     # Use screencapture with interactive selection
     try:
         subprocess.run(['screencapture', '-ix', str(filepath)], check=True)
     except subprocess.CalledProcessError as e:
         return None
-    
+
     if not filepath.exists() or filepath.stat().st_size == 0:
         return None
-    
+
     return filepath
 
 def progress_callback(phase, current, total):
@@ -81,17 +81,17 @@ def copy_to_clipboard(text):
 def main():
     # Initialize client
     try:
-        client = SFSClient(SERVER_URL)
+        client = FileDropClient(SERVER_URL)
     except ValueError as e:
         notify_failure("Configuration Error", str(e))
         print(f"Error: {e}")
         sys.exit(1)
-    
+
     # Ensure authenticated
     if not client.ensure_authenticated():
         notify_failure("Upload Failed", "Authentication required")
         sys.exit(1)
-    
+
     # Determine input type
     if len(sys.argv) > 1:
         # Files provided as arguments
@@ -105,7 +105,7 @@ def main():
             sys.exit(1)
         filepaths = [screenshot_path]
         mode = "screenshot"
-    
+
     # Upload
     if len(filepaths) == 1:
         result = client.upload_file(filepaths[0], progress_callback=progress_callback)
@@ -118,7 +118,7 @@ def main():
                 url
             )
             print(url)  # Output for Shortcut
-            
+
             # Clean up screenshot temp file
             if mode == "screenshot":
                 try:

@@ -6,7 +6,7 @@
 
 The workflows were created circa 2015 (Automator 2.5, build 409.2) and are incompatible with:
 - Modern macOS (Monterey 12.3+)
-- Current Simple File Sharer API
+- Current File Drop API
 - Modern security requirements
 
 **Recommendation:** Rewrite as modern macOS Shortcuts or standalone Python 3 scripts.
@@ -271,26 +271,26 @@ trap cleanup EXIT
 
 The browser-based uploader (`static/js/upload.webworker.js`) includes:
 
-✅ SHA-256 checksum calculation (Web Crypto API)  
-✅ Sequential chunk uploads with retry  
-✅ Exponential backoff (1s → 30s)  
-✅ Upload progress persistence (localStorage)  
-✅ 2MB chunks (optimized)  
-✅ Proper error handling  
-✅ User-friendly error messages  
-✅ Upload warning on page navigation  
-✅ Quota information display  
+✅ SHA-256 checksum calculation (Web Crypto API)
+✅ Sequential chunk uploads with retry
+✅ Exponential backoff (1s → 30s)
+✅ Upload progress persistence (localStorage)
+✅ 2MB chunks (optimized)
+✅ Proper error handling
+✅ User-friendly error messages
+✅ Upload warning on page navigation
+✅ Quota information display
 
 ### Workflow Gaps
 
-❌ No checksum calculation  
-❌ No retry logic  
-❌ No progress persistence  
-❌ 1MB chunks (suboptimal)  
-❌ Minimal error handling  
-❌ Generic error messages  
-❌ No upload state management  
-❌ No quota awareness  
+❌ No checksum calculation
+❌ No retry logic
+❌ No progress persistence
+❌ 1MB chunks (suboptimal)
+❌ Minimal error handling
+❌ Generic error messages
+❌ No upload state management
+❌ No quota awareness
 
 ---
 
@@ -461,12 +461,12 @@ See the detailed implementation plan in the `/tools/osx-workflows/MODERNIZATION.
 
 ## Conclusion
 
-These 10-year-old workflows are **fundamentally broken** on modern macOS and **incompatible** with the current Simple File Sharer API. While Automator itself still works, the workflows require substantial updates:
+These 10-year-old workflows are **fundamentally broken** on modern macOS and **incompatible** with the current File Drop API. While Automator itself still works, the workflows require substantial updates:
 
-**Critical:** Python 2 → Python 3 migration  
-**Critical:** API compatibility (auth, checksums, endpoints)  
-**High Priority:** Security fixes (HTTPS, UUID generation)  
-**High Priority:** Error handling and retry logic  
+**Critical:** Python 2 → Python 3 migration
+**Critical:** API compatibility (auth, checksums, endpoints)
+**High Priority:** Security fixes (HTTPS, UUID generation)
+**High Priority:** Error handling and retry logic
 
 **Recommendation:** Invest in Option 3 (standalone Python 3 CLI tool) for the best long-term solution, with Option 2 (Shortcuts) as a user-friendly complement.
 
