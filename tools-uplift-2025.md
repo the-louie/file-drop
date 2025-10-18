@@ -452,7 +452,7 @@ On first run, you'll be prompted for username/password. Session lasts 1 year.
 ## Usage
 
 - **Screenshot:** Press keyboard shortcut → Select area → URL copied to clipboard
-- **Files:** Right-click file(s) → Quick Actions → SFS Upload
+- **Files:** Right-click file(s) → Quick Actions → File Drop Upload
 ````
 
 ---
@@ -528,11 +528,11 @@ def take_screenshot_linux() -> Path:
 
 timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
 
-tmpdir = Path(tempfile.gettempdir()) / 'sfs'
+tmpdir = Path(tempfile.gettempdir()) / 'filedrop'
 
 tmpdir.mkdir(exist_ok=True)
 
-filepath = tmpdir / f"sfs_{timestamp}.png"
+filepath = tmpdir / f"fd_{timestamp}.png"
 
 # Try different screenshot tools
 
