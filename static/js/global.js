@@ -369,7 +369,7 @@ function relativeTime(unixTimestamp) {
                 i < prevCountFiles + files.length + waiting;
                 i++, j++ ) {
                 var fileDiv = document.createElement('div');
-                fileDiv.className = 'file ' + i;
+                fileDiv.className = 'file file-' + i;
                 fileDiv.style.position = 'relative';
                 fileDiv.innerHTML =
                     '<span class="progressbar"></span>' +
@@ -402,7 +402,7 @@ function relativeTime(unixTimestamp) {
         //var url = String(window.location.href+'/d/'+fileName.replace(/^\.\//,'')).replace(/([^:])\/\//,'$1/');
         var url = String(window.location.origin+'/d/'+fileName);
 
-        var fileElement = document.querySelector(".file." + currentFileID);
+        var fileElement = document.querySelector(".file-" + currentFileID);
         if (!fileElement) return false;
 
         fileElement.style.backgroundColor = '#ADA';
@@ -452,7 +452,7 @@ function relativeTime(unixTimestamp) {
 
     // Drag counter to handle nested drag events
     var dragCounter = 0;
-    
+
     // this code handles people who drop the files instead
     // or using the button
     function drop(evt) {
@@ -464,7 +464,7 @@ function relativeTime(unixTimestamp) {
         }
         handleNewFiles(evt.dataTransfer.files);
     }
-    
+
     function dragEnterHandler(evt) {
         noopHandler(evt);
         dragCounter++;
@@ -473,7 +473,7 @@ function relativeTime(unixTimestamp) {
             dropzone.classList.add('drag-active');
         }
     }
-    
+
     function dragLeaveHandler(evt) {
         noopHandler(evt);
         dragCounter--;
@@ -540,7 +540,7 @@ function relativeTime(unixTimestamp) {
         } else {
             if (!allFiles[currentFileID].size || allFiles[currentFileID].size <= 0) {
               locked = false;
-              var fileElement = document.querySelector(".file." + currentFileID);
+              var fileElement = document.querySelector(".file-" + currentFileID);
               if (fileElement) {
                   var progressbar = fileElement.querySelector(".progressbar");
                   if (progressbar) progressbar.style.display = "none";
@@ -563,7 +563,7 @@ function relativeTime(unixTimestamp) {
             if (dropzoneLabel) dropzoneLabel.style.display = 'none';
 
             worker.onmessage = function(e) {
-                var fileElement = document.querySelector(".file." + currentFileID);
+                var fileElement = document.querySelector(".file-" + currentFileID);
                 if (!fileElement) {
                     // Don't terminate - keep worker for next file
                     return;
@@ -657,7 +657,7 @@ function relativeTime(unixTimestamp) {
                             }
 
                             var fileDiv = document.createElement('div');
-                            fileDiv.className = 'file ' + r;
+                            fileDiv.className = 'file file-' + r;
                             fileDiv.style.position = 'relative';
                             fileDiv.innerHTML =
                                 '<span class="progressbar"></span>' +
