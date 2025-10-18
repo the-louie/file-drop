@@ -1554,13 +1554,22 @@ var server = app.listen(config.port, config.ip, function () {
 	var reset = '\x1b[0m';
 	var bold = '\x1b[1m';
 	
+	// Calculate box width based on content
+	var minWidth = 62;
+	var urlLine = 'URL:     ' + url;
+	var versionLine = 'Version: ' + packageJson.version;
+	var contentWidth = Math.max(minWidth, urlLine.length + 4, versionLine.length + 4);
+	
+	// Helper function to pad line content to box width
+	var padLine = (text) => text.padEnd(contentWidth - 4);
+	
 	// Pretty startup banner
 	console.log('');
-	console.log(green + '╔══════════════════════════════════════════════════════════════╗' + reset);
-	console.log(green + '║' + reset + bold + brightGreen + '                     FILE DROP READY                          ' + reset + green + '║' + reset);
-	console.log(green + '╠══════════════════════════════════════════════════════════════╣' + reset);
-	console.log(green + '║' + reset + '  ' + bold + 'URL:' + reset + '     ' + brightGreen + url.padEnd(49) + reset + green + '║' + reset);
-	console.log(green + '║' + reset + '  ' + bold + 'Version:' + reset + ' ' + packageJson.version.padEnd(49) + green + '║' + reset);
-	console.log(green + '╚══════════════════════════════════════════════════════════════╝' + reset);
+	console.log(green + '╔' + '═'.repeat(contentWidth - 2) + '╗' + reset);
+	console.log(green + '║' + reset + bold + brightGreen + padLine('FILE DROP READY') + reset + green + '║' + reset);
+	console.log(green + '╠' + '═'.repeat(contentWidth - 2) + '╣' + reset);
+	console.log(green + '║' + reset + '  ' + bold + 'URL:' + reset + '     ' + brightGreen + url + reset + ' '.repeat(contentWidth - urlLine.length - 4) + green + '║' + reset);
+	console.log(green + '║' + reset + '  ' + bold + 'Version:' + reset + ' ' + packageJson.version + ' '.repeat(contentWidth - versionLine.length - 4) + green + '║' + reset);
+	console.log(green + '╚' + '═'.repeat(contentWidth - 2) + '╝' + reset);
 	console.log('');
 });
