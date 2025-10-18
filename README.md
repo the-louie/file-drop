@@ -219,6 +219,18 @@ For detailed architecture documentation, see [docs/architecture.md](docs/archite
 - Maximum 3 concurrent sessions per user
 - Rate limiting on all endpoints
 
+## Development
+
+**Version:** 2025.1-42
+
+File Drop uses a custom versioning format: `YEAR.MAJOR-BUILD`
+
+See [VERSIONING.md](VERSIONING.md) for:
+- Version update procedures
+- Git hooks setup
+- Release workflow
+- Version management scripts
+
 ## License
 
 Copyright © 2025 the_louie
