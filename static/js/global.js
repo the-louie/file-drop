@@ -373,7 +373,7 @@ function relativeTime(unixTimestamp) {
                 fileDiv.style.position = 'relative';
                 fileDiv.innerHTML =
                     '<span class="progressbar"></span>' +
-                    '<div class="name ' + i + '"></div>' +
+                    '<div class="name"></div>' +
                     '<div class="progress">' +
                         '<input style="width: 800px;" class="resulttextbox" type="text" value="Waiting..." disabled />' +
                         '<input style="width:65px;" class="resultcopy" type="button" value="..." DISABLED/>' +
@@ -381,7 +381,7 @@ function relativeTime(unixTimestamp) {
                     '</div>';
                 dropzoneElement.appendChild(fileDiv);
 
-                var nameElement = fileDiv.querySelector(".name." + i);
+                var nameElement = fileDiv.querySelector(".name");
                 if (nameElement) {
                     nameElement.textContent = files[j].name;
                 }
