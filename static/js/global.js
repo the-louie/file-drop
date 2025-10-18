@@ -450,11 +450,39 @@ function relativeTime(unixTimestamp) {
         });
     }
 
+    // Drag counter to handle nested drag events
+    var dragCounter = 0;
+    
     // this code handles people who drop the files instead
     // or using the button
     function drop(evt) {
         noopHandler(evt);
+        dragCounter = 0;
+        var dropzone = document.querySelector(".dropdiv");
+        if (dropzone) {
+            dropzone.classList.remove('drag-active');
+        }
         handleNewFiles(evt.dataTransfer.files);
+    }
+    
+    function dragEnterHandler(evt) {
+        noopHandler(evt);
+        dragCounter++;
+        var dropzone = document.querySelector(".dropdiv");
+        if (dropzone) {
+            dropzone.classList.add('drag-active');
+        }
+    }
+    
+    function dragLeaveHandler(evt) {
+        noopHandler(evt);
+        dragCounter--;
+        if (dragCounter === 0) {
+            var dropzone = document.querySelector(".dropdiv");
+            if (dropzone) {
+                dropzone.classList.remove('drag-active');
+            }
+        }
     }
 
     // Function to show additional upload option when all files are done
@@ -484,11 +512,17 @@ function relativeTime(unixTimestamp) {
             }
 
             // Make the additional section a drop zone
-            additionalSection.addEventListener("dragenter", noopHandler);
-            additionalSection.addEventListener("dragexit", noopHandler);
+            additionalSection.addEventListener("dragenter", dragEnterHandler);
+            additionalSection.addEventListener("dragleave", dragLeaveHandler);
+            additionalSection.addEventListener("dragexit", dragLeaveHandler);
             additionalSection.addEventListener("dragover", noopHandler);
             additionalSection.addEventListener("drop", function(evt) {
                 noopHandler(evt);
+                dragCounter = 0;
+                var dropzone = document.querySelector(".dropdiv");
+                if (dropzone) {
+                    dropzone.classList.remove('drag-active');
+                }
                 handleNewFiles(evt.dataTransfer.files);
             });
         }
@@ -663,8 +697,9 @@ function relativeTime(unixTimestamp) {
         uploadsInProgress = false; // Reset flag for fresh page load
         dropzone = document.querySelector(".dropdiv");
         if (dropzone) {
-            dropzone.addEventListener("dragenter", noopHandler, false);
-            dropzone.addEventListener("dragexit", noopHandler, false);
+            dropzone.addEventListener("dragenter", dragEnterHandler, false);
+            dropzone.addEventListener("dragleave", dragLeaveHandler, false);
+            dropzone.addEventListener("dragexit", dragLeaveHandler, false);
             dropzone.addEventListener("dragover", noopHandler, false);
             dropzone.addEventListener("drop", drop, false);
         }

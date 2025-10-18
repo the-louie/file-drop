@@ -149,3 +149,9 @@ body {
     left: 0;
     pointer-events: none;
 }
+
+.dropdiv.drag-active {
+    background-color: rgba(170, 221, 170, 0.15);
+    border: 3px dashed #6c6;
+    box-sizing: border-box;
+}
