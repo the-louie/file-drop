@@ -348,6 +348,28 @@ config.secret = process.env.SESSION_SECRET;
 import sqlite from "sqlite3";
 var db 	   = new sqlite.Database(config.db_name);
 
+// Database initialization with completion tracking
+var tablesCreated = 0;
+var totalTables = 4; // uploaded_files, uploaded_chunks, audit_log, users
+
+function onAllTablesCreated() {
+	// Run all cleanup functions on startup (only after all tables are created)
+	cleanupOrphanedChunks();
+	if (config.file_retention_days && config.file_retention_days > 0) {
+		cleanupOldFiles();
+	}
+	if (config.audit_log_retention_days && config.audit_log_retention_days > 0) {
+		cleanupOldAuditLogs();
+	}
+}
+
+function checkTablesComplete() {
+	tablesCreated++;
+	if (tablesCreated === totalTables) {
+		onAllTablesCreated();
+	}
+}
+
 // Create table if it doesn't already exist.
 db.run("CREATE TABLE IF NOT EXISTS uploaded_files (fid INTEGER PRIMARY KEY AUTOINCREMENT, fileName TEXT, sha TEXT UNIQUE, timestamp INTEGER DEFAULT (strftime('%s', 'now')), collectionID TEXT, fileSize INTEGER, remote_ip TEXT)", function(err) {
 	if (err) {
@@ -367,7 +389,10 @@ db.run("CREATE TABLE IF NOT EXISTS uploaded_files (fid INTEGER PRIMARY KEY AUTOI
 			logError("Failed to create remote_ip+timestamp index:", idxErr2);
 		}
 	});
+	
+	checkTablesComplete();
 });
+
 db.run("CREATE TABLE IF NOT EXISTS uploaded_chunks (cid INTEGER PRIMARY KEY AUTOINCREMENT, uuid TEXT, filename TEXT, chunk_id INT, timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP)", function(err) {
 	if (err) {
 		logError("Failed to create uploaded_chunks table:", err);
@@ -380,12 +405,17 @@ db.run("CREATE TABLE IF NOT EXISTS uploaded_chunks (cid INTEGER PRIMARY KEY AUTO
 			logError("Failed to create uuid index:", idxErr);
 		}
 	});
+	
+	checkTablesComplete();
 });
+
 db.run("CREATE TABLE IF NOT EXISTS audit_log (id INTEGER PRIMARY KEY AUTOINCREMENT, timestamp INTEGER DEFAULT (strftime('%s', 'now')), event_type TEXT, remote_ip TEXT, username TEXT, details TEXT, status TEXT)", function(err) {
 	if (err) {
 		logError("Failed to create audit_log table:", err);
 		process.exit(1);
 	}
+	
+	checkTablesComplete();
 });
 
 // Create users table for multi-user support
@@ -400,16 +430,9 @@ db.run("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, 
 		if (idxErr) {
 			logError("Failed to create username index:", idxErr);
 		}
-		
-		// Run all cleanup functions on startup (only after all tables are created)
-		cleanupOrphanedChunks();
-		if (config.file_retention_days && config.file_retention_days > 0) {
-			cleanupOldFiles();
-		}
-		if (config.audit_log_retention_days && config.audit_log_retention_days > 0) {
-			cleanupOldAuditLogs();
-		}
 	});
+	
+	checkTablesComplete();
 });
 
 // Cleanup function for orphaned chunk files
