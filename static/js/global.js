@@ -695,14 +695,12 @@ function relativeTime(unixTimestamp) {
 
     } else {
         uploadsInProgress = false; // Reset flag for fresh page load
-        dropzone = document.querySelector(".dropdiv");
-        if (dropzone) {
-            dropzone.addEventListener("dragenter", dragEnterHandler, false);
-            dropzone.addEventListener("dragleave", dragLeaveHandler, false);
-            dropzone.addEventListener("dragexit", dragLeaveHandler, false);
-            dropzone.addEventListener("dragover", noopHandler, false);
-            dropzone.addEventListener("drop", drop, false);
-        }
+        
+        // Listen to drag events on document (since .dropdiv has pointer-events: none)
+        document.addEventListener("dragenter", dragEnterHandler, false);
+        document.addEventListener("dragleave", dragLeaveHandler, false);
+        document.addEventListener("dragover", noopHandler, false);
+        document.addEventListener("drop", drop, false);
     }
 
     var collectionDiv = document.createElement('div');
