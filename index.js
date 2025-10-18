@@ -814,11 +814,12 @@ if (config.authdetails && config.authdetails.username && config.authdetails.pass
 		});
 	}));
 	app.use(function(request, response, next) {
-		// Allow access to login page, download URLs, and collection URLs without authentication
+		// Allow access to login page, download URLs, collection URLs, and public API endpoints without authentication
 		if (!request.user &&
 			!request.path.startsWith('/login') &&
 			!request.path.startsWith('/d/') &&
-			!request.path.startsWith('/c/')) {
+			!request.path.startsWith('/c/') &&
+			!request.path.startsWith('/api/')) {
 			return response.redirect('/login');
 		}
 		next();
