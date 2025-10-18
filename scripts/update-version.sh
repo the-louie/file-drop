@@ -8,16 +8,16 @@ set -e
 if [ -z "$1" ]; then
     # Auto-increment build number
     CURRENT_VERSION=$(node -p "require('./package.json').version")
-    
+
     # Extract year, major, and build
     YEAR=$(echo $CURRENT_VERSION | cut -d'.' -f1)
     MAJOR=$(echo $CURRENT_VERSION | cut -d'-' -f1 | cut -d'.' -f2)
     BUILD=$(echo $CURRENT_VERSION | cut -d'-' -f2)
-    
+
     # Increment build number
     NEW_BUILD=$((BUILD + 1))
     NEW_VERSION="${YEAR}.${MAJOR}-${NEW_BUILD}"
-    
+
     echo "Auto-incrementing: ${CURRENT_VERSION} → ${NEW_VERSION}"
 else
     NEW_VERSION="$1"

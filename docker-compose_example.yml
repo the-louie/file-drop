@@ -4,10 +4,10 @@ services:
   file-drop:
     # Option 1: Use pre-built image from Docker Hub (recommended)
     image: thelouie/file-drop:latest
-    
+
     # Option 2: Build locally (comment out 'image' above and uncomment 'build' below)
     # build: .
-    
+
     container_name: file-drop
     ports:
       - "9898:9898"

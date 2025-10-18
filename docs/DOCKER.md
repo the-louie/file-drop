@@ -303,17 +303,17 @@ docker-compose up -d  # Auto-selects arm64 image
 server {
     listen 443 ssl http2;
     server_name files.yourdomain.com;
-    
+
     ssl_certificate /path/to/cert.pem;
     ssl_certificate_key /path/to/key.pem;
-    
+
     location / {
         proxy_pass http://localhost:9898;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
-        
+
         # For large file uploads
         client_max_body_size 10G;
         proxy_request_buffering off;

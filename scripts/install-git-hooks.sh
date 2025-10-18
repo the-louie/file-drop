@@ -17,7 +17,7 @@ cat > "${HOOKS_DIR}/pre-commit" << 'EOF'
 if git diff --cached --name-only | grep -q "package.json"; then
     # Get current version from package.json
     STAGED_VERSION=$(git show :package.json | grep '"version"' | sed 's/.*"version": "\(.*\)".*/\1/')
-    
+
     # Check package-lock.json
     if [ -f "package-lock.json" ]; then
         LOCK_VERSION=$(grep -m1 '"version":' package-lock.json | sed 's/.*"version": "\(.*\)".*/\1/')
@@ -30,7 +30,7 @@ if git diff --cached --name-only | grep -q "package.json"; then
             exit 1
         fi
     fi
-    
+
     # Check tools/lib/__init__.py
     if [ -f "tools/lib/__init__.py" ]; then
         LIB_VERSION=$(grep "__version__" tools/lib/__init__.py | sed "s/__version__ = '\(.*\)'/\1/")
@@ -59,7 +59,7 @@ cat > "${HOOKS_DIR}/post-commit" << 'EOF'
 # Check if this was a version bump
 if git log -1 --pretty=%B | grep -q "bump version"; then
     VERSION=$(node -p "require('./package.json').version" 2>/dev/null || echo "unknown")
-    
+
     echo ""
     echo "📦 Version bumped to ${VERSION}"
     echo ""
