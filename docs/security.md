@@ -58,7 +58,7 @@ This document details the security features and encryption mechanisms.
 
 **Key Derivation:**
 ```javascript
-key = PBKDF2(SESSION_SECRET, 'simple-file-sharer-salt', 100000, 32, 'sha256')
+key = PBKDF2(SESSION_SECRET, 'file-drop-salt', 100000, 32, 'sha256')
 ```
 
 **Encryption Process:**

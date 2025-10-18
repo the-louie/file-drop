@@ -1,6 +1,6 @@
 # System Overview
 
-Simple File Sharer is a Node.js-based file sharing application that supports secure, chunked file uploads with enterprise-grade security features.
+File Drop is a Node.js-based file sharing application that supports secure, chunked file uploads with enterprise-grade security features.
 
 ## High-Level Architecture
 

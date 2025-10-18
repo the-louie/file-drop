@@ -245,7 +245,7 @@ function getEncryptionKey() {
 	// Use PBKDF2 to derive a proper 256-bit key from the secret
 	return crypto.pbkdf2Sync(
 		config.secret || process.env.SESSION_SECRET,
-		'simple-file-sharer-salt', // Fixed salt for key derivation
+		'file-drop-salt', // Fixed salt for key derivation
 		100000, // Iterations
 		32, // 256 bits
 		'sha256'
@@ -1520,5 +1520,5 @@ app.get('/api/quota', function (request, response) {
 var server = app.listen(config.port, config.ip, function () {
 	var host = server.address().address;
 	var port = server.address().port;
-	log("simple-file-sharer started on http://"+host+":"+port);
+	log("file-drop started on http://"+host+":"+port);
 });

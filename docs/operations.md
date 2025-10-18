@@ -184,7 +184,7 @@ Set any quota to `0` to disable.
 
 **Console Output (ISO 8601 timestamps):**
 ```
-2025-10-18T12:34:56.789Z simple-file-sharer started on http://0.0.0.0:9898
+2025-10-18T12:34:56.789Z file-drop started on http://0.0.0.0:9898
 2025-10-18T12:35:01.123Z a1b2c3d4e5f6g7h8... uploaded abc123_0 0
 2025-10-18T12:35:02.456Z Merge request: {uuid: ..., chunkCount: 5, ...}
 2025-10-18T12:35:03.789Z Generated filename: xYz9

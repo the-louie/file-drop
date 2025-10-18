@@ -1,9 +1,9 @@
 version: '3.8'
 
 services:
-  simple-file-sharer:
+  file-drop:
     build: .
-    container_name: simple-file-sharer
+    container_name: file-drop
     ports:
       - "9898:9898"
     volumes:

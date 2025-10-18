@@ -1,4 +1,6 @@
-# Simple File Sharer
+# File-Drop
+
+(Started as a fork of merty/simple-file-uploader, but has been completly rewritten since then)
 
 A secure, modern file sharing application with chunked uploads, user authentication, and enterprise-grade features. Built with Node.js and vanilla JavaScript.
 
@@ -24,7 +26,7 @@ A secure, modern file sharing application with chunked uploads, user authenticat
 1. **Clone and install:**
    ```bash
    git clone <repository-url>
-   cd simple-file-sharer
+   cd file-drop
    npm install
    ```
 

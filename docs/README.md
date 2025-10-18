@@ -1,6 +1,6 @@
 # Documentation Index
 
-Complete technical documentation for Simple File Sharer.
+Complete technical documentation for File Drop.
 
 ## Documentation Structure
 

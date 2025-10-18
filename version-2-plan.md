@@ -1,5 +1,5 @@
 <!-- a9afa15a-f7f4-44c7-a9c4-e8c7e7b8b01e a0088406-a1b9-4d99-8885-70492ca387c8 -->
-# Simple File Sharer - Version 2.0 Modernization Plan
+# File Drop - Version 2.0 Modernization Plan
 
 ## Version 2.0 Goals
 This plan tracks the ongoing modernization from the legacy codebase to a modern, secure, high-performance file-sharing application.

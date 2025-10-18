@@ -1,6 +1,6 @@
 # Application Architecture
 
-This document details the backend and frontend architecture of Simple File Sharer.
+This document details the backend and frontend architecture of File Drop.
 
 ## Backend Architecture
 
@@ -182,7 +182,7 @@ var uploadWorker = null;     // Reusable worker
 self.onmessage = function(e) {
   self.blob = e.data.file;
   self.chunkCount = Math.ceil(self.blob.size / CHUNK_SIZE);
-  
+
   // Calculate SHA-256 checksum of entire file
   self.blob.arrayBuffer()
     .then(buffer => crypto.subtle.digest('SHA-256', buffer))

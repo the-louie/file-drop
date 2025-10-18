@@ -1,7 +1,7 @@
 {
-  "name": "simple-file-sharer",
+  "name": "file-drop",
   "version": "0.3.1",
-  "description": "Simple file sharer",
+  "description": "File Drop",
   "main": "index.js",
   "type": "module",
   "directories": {},
@@ -26,12 +26,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/the-louie/simple-file-sharer.git"
+    "url": "git://github.com/the-louie/file-drop.git"
   },
   "author": "the-louie",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/the-louie/simple-file-sharer/issues"
+    "url": "https://github.com/the-louie/file-drop/issues"
   },
-  "homepage": "https://github.com/the-louie/simple-file-sharer"
+  "homepage": "https://github.com/the-louie/file-drop"
 }
