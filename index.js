@@ -40,7 +40,10 @@ app.use(helmet({
 	crossOriginEmbedderPolicy: false, // Allow file downloads
 }));
 
-var validChars = [ 'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z', 'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','0','1','2','3','4','5','6','7','8','9','-','_','.','~' ];
+// Use only alphanumeric lowercase for file IDs (a-z0-9 = 36 chars)
+// This provides 36^5 = 60.5M combinations with 5 chars, 36^6 = 2.1B with 6 chars
+// Easier to read, type, and share compared to mixed-case or special characters
+var validChars = [ 'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','0','1','2','3','4','5','6','7','8','9' ];
 
 // Helper function to add ISO timestamp to console output
 function log(...args) {
@@ -860,7 +863,7 @@ app.use(express.static(currentPath + '/static/'));
 
 const safeRandomId = async (length, retryCount) => new Promise((resolve, _reject) => {
 	if (length === undefined)
-		length = 4; // Start with 4 chars for better distribution (64^4 = 16M combinations)
+		length = 5; // Start with 5 chars (36^5 = 60M combinations, harder to brute-force)
 	else if (length > 64)
 		return resolve(false); // Max length exceeded
 
@@ -928,7 +931,7 @@ function shortenHash(hash) {
 				checkLength(i + 1);
 			});
 		}
-		checkLength(4);
+		checkLength(5); // Start at 5 chars for consistency with safeRandomId()
 	});
 }
 
@@ -1012,10 +1015,10 @@ app.post('/upload/',
 
 app.get('/d/:fileName/',
 	downloadLimiter,
-	param('fileName').matches(/^[A-Za-z0-9\-_\.~]+$/).withMessage('Invalid file name format'),
+	param('fileName').matches(/^[a-z0-9]+(\.[a-z0-9]{1,10})?$/i).withMessage('Invalid file name format'),
 	handleValidationErrors,
 	function (request, response) {
-	var sha = request.params.fileName.replace(/\.[A-Za-z0-9]{3}$/,"");
+	var sha = request.params.fileName.replace(/\.[a-z0-9]{1,10}$/i,"");
 
 	var query = "SELECT fileName FROM uploaded_files WHERE sha = ?";
 	db.get(query, [sha], function(err, row) {
@@ -1547,26 +1550,26 @@ var server = app.listen(config.port, config.ip, function () {
 	var host = server.address().address;
 	var port = server.address().port;
 	var url = "http://"+host+":"+port;
-	
+
 	// ANSI color codes
 	var green = '\x1b[32m';
 	var brightGreen = '\x1b[92m';
 	var reset = '\x1b[0m';
 	var bold = '\x1b[1m';
-	
+
 	// Calculate box width based on content
 	var minWidth = 62;
 	var urlLine = 'URL:     ' + url;
 	var versionLine = 'Version: ' + packageJson.version;
 	var contentWidth = Math.max(minWidth, urlLine.length + 4, versionLine.length + 4);
-	
+
 	// Helper function to pad line content to box width
 	var padLine = (text) => text.padEnd(contentWidth - 4);
-	
+
 	// Pretty startup banner
 	console.log('');
 	console.log(green + '╔' + '═'.repeat(contentWidth - 2) + '╗' + reset);
-	console.log(green + '║' + reset + bold + brightGreen + padLine('FILE DROP READY') + reset + green + '║' + reset);
+	console.log(green + '║' + reset + bold + brightGreen + padLine(' FILE DROP READY') + reset + green + '║' + reset);
 	console.log(green + '╠' + '═'.repeat(contentWidth - 2) + '╣' + reset);
 	console.log(green + '║' + reset + '  ' + bold + 'URL:' + reset + '     ' + brightGreen + url + reset + ' '.repeat(contentWidth - urlLine.length - 4) + green + '║' + reset);
 	console.log(green + '║' + reset + '  ' + bold + 'Version:' + reset + ' ' + packageJson.version + ' '.repeat(contentWidth - versionLine.length - 4) + green + '║' + reset);
