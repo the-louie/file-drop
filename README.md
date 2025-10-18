@@ -148,7 +148,34 @@ Set any quota to `0` to disable.
 
 ## Docker Deployment
 
-### Quick Start
+### Option 1: Pre-built Image from Docker Hub (Recommended)
+
+Pull the official image directly:
+
+```bash
+# Pull latest image
+docker pull thelouie/file-drop:latest
+
+# Generate secret
+SESSION_SECRET=$(openssl rand -hex 32)
+
+# Copy and configure
+cp config_example.json config.json
+# Edit config.json: set ip="0.0.0.0", db_name="/data/memory.db"
+
+# Run container
+docker run -d --name file-drop \
+  -p 9898:9898 \
+  -e SESSION_SECRET=$SESSION_SECRET \
+  -e NODE_ENV=production \
+  -v ./config.json:/app/config.json:ro \
+  -v ./uploads:/app/uploads \
+  -v filedrop-data:/data \
+  --restart unless-stopped \
+  thelouie/file-drop:latest
+```
+
+### Option 2: Build Locally
 
 ```bash
 # Generate secret
@@ -158,7 +185,7 @@ SESSION_SECRET=$(openssl rand -hex 32)
 cp config_example.json config.json
 # Edit config.json: set ip="0.0.0.0", db_name="/data/memory.db"
 
-# Start container
+# Start container (builds automatically)
 SESSION_SECRET=$SESSION_SECRET NODE_ENV=production docker-compose up -d
 ```
 
@@ -169,6 +196,8 @@ docker-compose logs -f          # View logs
 docker-compose restart          # Restart after config changes
 docker-compose down -v          # Remove everything (including data!)
 ```
+
+**For detailed Docker documentation, see [docs/DOCKER.md](docs/DOCKER.md)**
 
 ## Technical Details
 

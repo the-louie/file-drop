@@ -2,10 +2,18 @@ version: '3.8'
 
 services:
   file-drop:
-    build: .
+    # Option 1: Use pre-built image from Docker Hub (recommended)
+    image: thelouie/file-drop:latest
+    
+    # Option 2: Build locally (comment out 'image' above and uncomment 'build' below)
+    # build: .
+    
     container_name: file-drop
     ports:
       - "9898:9898"
+    environment:
+      - SESSION_SECRET=${SESSION_SECRET}
+      - NODE_ENV=${NODE_ENV:-production}
     volumes:
       - ./config.json:/app/config.json:ro
       - ./uploads:/app/uploads
