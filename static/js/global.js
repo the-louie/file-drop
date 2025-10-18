@@ -26,16 +26,16 @@ var guid = (function () {
         // Format: xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx
         // Where 4 is version, y is variant (8, 9, a, or b)
         var uuid = s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-        
+
         // Set version to 4 (position 14)
         uuid = uuid.substring(0, 14) + '4' + uuid.substring(15);
-        
+
         // Set variant bits (position 19: make it 8, 9, a, or b)
         var variantChar = uuid.charAt(19);
         var variantValue = parseInt(variantChar, 16);
         variantValue = (variantValue & 0x3) | 0x8; // Set bits to 10xx
         uuid = uuid.substring(0, 19) + variantValue.toString(16) + uuid.substring(20);
-        
+
         return uuid;
     };
 })();
@@ -46,6 +46,13 @@ function getUrlVars() {
         vars[key] = value;
     });
     return vars;
+}
+
+// Extract collection ID from URL path (e.g., /c/abc123 -> abc123)
+function getCollectionIdFromPath() {
+    var path = window.location.pathname;
+    var match = path.match(/^\/c\/([a-f0-9\-]+)/i);
+    return match ? match[1] : null;
 }
 
 function humanFileSize(bytes, si) {
@@ -277,7 +284,7 @@ function relativeTime(unixTimestamp) {
         prevCountFiles = 0,
         waiting = 0,
         uuid = guid(),
-        uuidurl = String(window.location.origin+'/?c='+uuid),
+        uuidurl = String(window.location.origin+'/c/'+uuid),
         dropzone,
         uploadsInProgress = false,
         uploadWorker = null; // Reusable worker for all uploads
@@ -646,12 +653,13 @@ function relativeTime(unixTimestamp) {
     }
 
 
-    if (getUrlVars().c) {
+    var collectionId = getCollectionIdFromPath();
+    if (collectionId) {
         var dropzoneLabel = document.getElementById("dropzoneLabel");
         if (dropzoneLabel) dropzoneLabel.style.display = 'none';
         uploadsInProgress = false; // Reset flag for collection view
         var xmlhttp = new XMLHttpRequest();
-        xmlhttp.open("GET","/c/"+getUrlVars().c,true);
+        xmlhttp.open("GET","/api/collection/"+collectionId,true);
         xmlhttp.onreadystatechange=function() {
             if (xmlhttp.readyState==4) {
                 var dropzoneDiv = document.getElementById("dropzone");
@@ -763,7 +771,7 @@ function relativeTime(unixTimestamp) {
 
     // Load version and quota on page load (if not collection view)
     loadVersion();
-    if (!getUrlVars().c) {
+    if (!getCollectionIdFromPath()) {
         loadQuotaInfo();
     }
 

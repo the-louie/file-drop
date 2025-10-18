@@ -836,7 +836,7 @@ if (config.authdetails && config.authdetails.username && config.authdetails.pass
 		});
 	}));
 	app.use(function(request, response, next) {
-		// Allow access to login page, download URLs, collection URLs, and public API endpoints without authentication
+		// Allow access to login page, download URLs (/d/), collection pages (/c/), and public API endpoints (/api/) without authentication
 		if (!request.user &&
 			!request.path.startsWith('/login') &&
 			!request.path.startsWith('/d/') &&
@@ -1161,8 +1161,8 @@ app.post('/merge/',
 				var encryptedChunkData = await fsPromises.readFile(chunkPath);
 				// Decrypt chunk data before merging
 				var chunkData = decryptChunk(encryptedChunkData);
-				result_file.write(chunkData);
-				fileSize += chunkData.length;
+			result_file.write(chunkData);
+			fileSize += chunkData.length;
 				fileList.push(chunkPath);
 			} catch (fileErr) {
 				logError("Error reading chunk file:", fileErr);
@@ -1378,7 +1378,18 @@ app.post('/merge/',
 	});
 });
 
+// User-facing collection URL - serves the HTML interface
 app.get('/c/:collectionID',
+	param('collectionID').isUUID(4).withMessage('collectionID must be a valid UUID v4'),
+	handleValidationErrors,
+	function (request, response) {
+		// Serve index.html for user-facing collection URLs
+		response.sendFile(currentPath + '/static/index.html');
+	}
+);
+
+// API endpoint for collection data (called by frontend)
+app.get('/api/collection/:collectionID',
 	param('collectionID').isUUID(4).withMessage('collectionID must be a valid UUID v4'),
 	handleValidationErrors,
 	function (request, response) {
