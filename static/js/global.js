@@ -458,27 +458,27 @@ function relativeTime(unixTimestamp) {
     function drop(evt) {
         noopHandler(evt);
         dragCounter = 0;
-        var dropzone = document.querySelector(".dropdiv");
+        var dropzone = document.getElementById("dropzone");
         if (dropzone) {
             dropzone.classList.remove('drag-active');
         }
         handleNewFiles(evt.dataTransfer.files);
     }
-
+    
     function dragEnterHandler(evt) {
         noopHandler(evt);
         dragCounter++;
-        var dropzone = document.querySelector(".dropdiv");
+        var dropzone = document.getElementById("dropzone");
         if (dropzone) {
             dropzone.classList.add('drag-active');
         }
     }
-
+    
     function dragLeaveHandler(evt) {
         noopHandler(evt);
         dragCounter--;
         if (dragCounter === 0) {
-            var dropzone = document.querySelector(".dropdiv");
+            var dropzone = document.getElementById("dropzone");
             if (dropzone) {
                 dropzone.classList.remove('drag-active');
             }
@@ -519,7 +519,7 @@ function relativeTime(unixTimestamp) {
             additionalSection.addEventListener("drop", function(evt) {
                 noopHandler(evt);
                 dragCounter = 0;
-                var dropzone = document.querySelector(".dropdiv");
+                var dropzone = document.getElementById("dropzone");
                 if (dropzone) {
                     dropzone.classList.remove('drag-active');
                 }
@@ -696,11 +696,14 @@ function relativeTime(unixTimestamp) {
     } else {
         uploadsInProgress = false; // Reset flag for fresh page load
         
-        // Listen to drag events on document (since .dropdiv has pointer-events: none)
-        document.addEventListener("dragenter", dragEnterHandler, false);
-        document.addEventListener("dragleave", dragLeaveHandler, false);
-        document.addEventListener("dragover", noopHandler, false);
-        document.addEventListener("drop", drop, false);
+        // Attach drag events to dropzone
+        var dropzoneElement = document.getElementById("dropzone");
+        if (dropzoneElement) {
+            dropzoneElement.addEventListener("dragenter", dragEnterHandler, false);
+            dropzoneElement.addEventListener("dragleave", dragLeaveHandler, false);
+            dropzoneElement.addEventListener("dragover", noopHandler, false);
+            dropzoneElement.addEventListener("drop", drop, false);
+        }
     }
 
     var collectionDiv = document.createElement('div');
