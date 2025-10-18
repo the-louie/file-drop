@@ -389,7 +389,7 @@ db.run("CREATE TABLE IF NOT EXISTS uploaded_files (fid INTEGER PRIMARY KEY AUTOI
 			logError("Failed to create remote_ip+timestamp index:", idxErr2);
 		}
 	});
-	
+
 	checkTablesComplete();
 });
 
@@ -405,7 +405,7 @@ db.run("CREATE TABLE IF NOT EXISTS uploaded_chunks (cid INTEGER PRIMARY KEY AUTO
 			logError("Failed to create uuid index:", idxErr);
 		}
 	});
-	
+
 	checkTablesComplete();
 });
 
@@ -414,7 +414,7 @@ db.run("CREATE TABLE IF NOT EXISTS audit_log (id INTEGER PRIMARY KEY AUTOINCREME
 		logError("Failed to create audit_log table:", err);
 		process.exit(1);
 	}
-	
+
 	checkTablesComplete();
 });
 
@@ -431,7 +431,7 @@ db.run("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, 
 			logError("Failed to create username index:", idxErr);
 		}
 	});
-	
+
 	checkTablesComplete();
 });
 
@@ -1546,5 +1546,21 @@ app.get('/api/version', function (request, response) {
 var server = app.listen(config.port, config.ip, function () {
 	var host = server.address().address;
 	var port = server.address().port;
-	log("file-drop started on http://"+host+":"+port);
+	var url = "http://"+host+":"+port;
+	
+	// ANSI color codes
+	var green = '\x1b[32m';
+	var brightGreen = '\x1b[92m';
+	var reset = '\x1b[0m';
+	var bold = '\x1b[1m';
+	
+	// Pretty startup banner
+	console.log('');
+	console.log(green + '╔══════════════════════════════════════════════════════════════╗' + reset);
+	console.log(green + '║' + reset + bold + brightGreen + '                     FILE DROP READY                          ' + reset + green + '║' + reset);
+	console.log(green + '╠══════════════════════════════════════════════════════════════╣' + reset);
+	console.log(green + '║' + reset + '  ' + bold + 'URL:' + reset + '     ' + brightGreen + url.padEnd(49) + reset + green + '║' + reset);
+	console.log(green + '║' + reset + '  ' + bold + 'Version:' + reset + ' ' + packageJson.version.padEnd(49) + green + '║' + reset);
+	console.log(green + '╚══════════════════════════════════════════════════════════════╝' + reset);
+	console.log('');
 });
