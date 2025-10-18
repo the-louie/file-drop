@@ -17,6 +17,7 @@ import { createRequire } from "module";
 
 const require = createRequire(import.meta.url);
 const LocalStrategy = passportLocal.Strategy;
+const packageJson = require('./package.json');
 
 var currentPath = process.cwd();
 var app 	   = express();
@@ -1515,6 +1516,11 @@ app.get('/api/quota', function (request, response) {
 			response.json(quotaInfo);
 		}
 	}
+});
+
+// Version endpoint (public)
+app.get('/api/version', function (request, response) {
+	response.json({ version: packageJson.version });
 });
 
 var server = app.listen(config.port, config.ip, function () {

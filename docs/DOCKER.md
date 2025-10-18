@@ -174,9 +174,9 @@ This builds for multiple platforms and pushes to Docker Hub.
 docker login
 
 # Build and push
-docker build -t thelouie/file-drop:0.3.1 .
+docker build -t thelouie/file-drop:2025.1-42 .
 docker build -t thelouie/file-drop:latest .
-docker push thelouie/file-drop:0.3.1
+docker push thelouie/file-drop:2025.1-42
 docker push thelouie/file-drop:latest
 ```
 
@@ -194,8 +194,8 @@ Pushing to GitHub automatically builds and publishes:
 
 ```bash
 # Release new version
-git tag -a v0.3.2 -m "Release v0.3.2"
-git push origin v0.3.2
+git tag -a v2025.1-43 -m "Release v2025.1-43"
+git push origin v2025.1-43
 ```
 
 GitHub Actions will:

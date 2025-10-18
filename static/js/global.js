@@ -692,7 +692,28 @@ function relativeTime(unixTimestamp) {
         });
     }
 
-    // Load quota on page load (if not collection view)
+    // Fetch and display version
+    function loadVersion() {
+        fetch('/api/version')
+            .then(function(response) {
+                if (!response.ok) return;
+                return response.json();
+            })
+            .then(function(data) {
+                if (data && data.version) {
+                    var versionElement = document.getElementById('version');
+                    if (versionElement) {
+                        versionElement.textContent = 'v' + data.version;
+                    }
+                }
+            })
+            .catch(function(error) {
+                debugLog('Failed to fetch version:', error);
+            });
+    }
+
+    // Load version and quota on page load (if not collection view)
+    loadVersion();
     if (!getUrlVars().c) {
         loadQuotaInfo();
     }
