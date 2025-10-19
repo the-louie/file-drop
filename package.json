@@ -1,6 +1,6 @@
 {
   "name": "file-drop",
-  "version": "2025.1-57",
+  "version": "2025.1-58",
   "description": "File Drop",
   "main": "index.js",
   "type": "module",

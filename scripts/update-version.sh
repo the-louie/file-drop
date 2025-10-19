@@ -32,9 +32,17 @@ fi
 
 echo "Updating version to ${NEW_VERSION}..."
 
-# Update package.json and package-lock.json using npm
-npm version "${NEW_VERSION}" --no-git-tag-version
-echo "✓ Updated package.json and package-lock.json"
+# Update package.json (first occurrence only)
+if [ -f "package.json" ]; then
+    sed -i '0,/"version": ".*"/{s/"version": ".*"/"version": "'"${NEW_VERSION}"'"/}' package.json
+    echo "✓ Updated package.json"
+fi
+
+# Update package-lock.json (only first 3 occurrences - project version fields)
+if [ -f "package-lock.json" ]; then
+    sed -i '1,10{s/"version": ".*",/"version": "'"${NEW_VERSION}"'",/}' package-lock.json
+    echo "✓ Updated package-lock.json"
+fi
 
 # Update lib version
 if [ -f "tools/lib/__init__.py" ]; then
