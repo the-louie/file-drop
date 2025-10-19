@@ -20,7 +20,7 @@ if git diff --cached --name-only | grep -q "package.json"; then
 
     # Check package-lock.json
     if [ -f "package-lock.json" ]; then
-        LOCK_VERSION=$(grep -m1 '"version":' package-lock.json | sed 's/.*"version": "\(.*\)".*/\1/')
+        LOCK_VERSION=$(grep -m1 '"version":' package-lock.json | sed 's/.*"version": "\(.*\)".*/\1/' | tr -d '\r')
         if [ "$STAGED_VERSION" != "$LOCK_VERSION" ]; then
             echo "⚠️  Version mismatch detected!"
             echo "   package.json: $STAGED_VERSION"
@@ -33,7 +33,7 @@ if git diff --cached --name-only | grep -q "package.json"; then
 
     # Check tools/lib/__init__.py
     if [ -f "tools/lib/__init__.py" ]; then
-        LIB_VERSION=$(grep "__version__" tools/lib/__init__.py | sed "s/__version__ = '\(.*\)'/\1/")
+        LIB_VERSION=$(grep "__version__" tools/lib/__init__.py | sed "s/__version__ = '\(.*\)'/\1/" | tr -d '\r')
         if [ "$STAGED_VERSION" != "$LIB_VERSION" ]; then
             echo "⚠️  Version mismatch detected!"
             echo "   package.json: $STAGED_VERSION"
