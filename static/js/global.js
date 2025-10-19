@@ -524,7 +524,7 @@ function relativeTime(unixTimestamp) {
             additionalSection.style.fontFamily = 'Arial, sans-serif';
             additionalSection.style.fontSize = '0.9em';
             additionalSection.style.cursor = 'pointer';
-            additionalSection.innerHTML = '<div>Want to upload more files?<br/>Drop files here to add more</div>';
+            additionalSection.innerHTML = '<div>Want to add more files to the collection?<br/>Just drop files here!</div>';
 
             var dropzoneElement = document.getElementById("dropzone");
             if (dropzoneElement) {

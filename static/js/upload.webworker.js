@@ -17,16 +17,16 @@ var guid = (function () {
     // Format: xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx
     // Where 4 is version, y is variant (8, 9, a, or b)
     var uuid = s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-    
+
     // Set version to 4 (position 14)
     uuid = uuid.substring(0, 14) + '4' + uuid.substring(15);
-    
+
     // Set variant bits (position 19: make it 8, 9, a, or b)
     var variantChar = uuid.charAt(19);
     var variantValue = parseInt(variantChar, 16);
     variantValue = (variantValue & 0x3) | 0x8; // Set bits to 10xx
     uuid = uuid.substring(0, 19) + variantValue.toString(16) + uuid.substring(20);
-    
+
     return uuid;
   };
 })();
