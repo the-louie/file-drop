@@ -99,7 +99,60 @@ Version is displayed in:
 - API endpoint: `GET /api/version` → `{"version": "2025.1-42"}`
 - Docker image tags: `thelouie/file-drop:2025.1-42`
 
+## Release Scripts
+
+### release.sh
+
+Automated script for build releases (auto-increments build number).
+
+**Usage:**
+```bash
+./scripts/release.sh
+# Prompts for confirmation
+# 2025.1-57 → 2025.1-58
+```
+
+**What it does:**
+1. Auto-increments build number
+2. Commits version bump
+3. Creates git tag
+4. Pushes to GitHub
+5. Builds and pushes Docker images to Docker Hub
+
+### release-major.sh
+
+Automated script for major version releases (increments major version, resets build to 1).
+
+**Usage:**
+```bash
+./scripts/release-major.sh
+# Prompts for confirmation
+# 2025.1-57 → 2025.2-1
+```
+
+**What it does:**
+1. Increments major version number
+2. Resets build number to 1
+3. Commits version bump
+4. Creates git tag
+5. Pushes to GitHub
+6. Builds and pushes Docker images to Docker Hub
+
 ## Release Process
+
+### Quick Release (recommended)
+
+For build releases:
+```bash
+./scripts/release.sh
+```
+
+For major version releases:
+```bash
+./scripts/release-major.sh
+```
+
+### Manual Release
 
 Complete release checklist:
 
@@ -117,11 +170,11 @@ git commit -m "bump version to $(node -p require('./package.json').version)"
 VERSION=$(node -p "require('./package.json').version")
 git tag -a v${VERSION} -m "Release v${VERSION}"
 
-# 5. Push to GitHub (triggers Docker build)
+# 5. Push to GitHub
 git push origin main --tags
 
-# 6. Monitor GitHub Actions
-# Check: https://github.com/the-louie/file-drop/actions
+# 6. Build and push Docker images
+./build-and-push.sh
 
 # 7. Verify Docker Hub
 # Check: https://hub.docker.com/r/thelouie/file-drop/tags
